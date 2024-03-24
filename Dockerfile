@@ -17,8 +17,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . /usr/src/app/
 
-
-
 # Add the frontend directory as an environment variable
 ENV FRONTEND_FOLDER=/usr/src/app/frontend
-

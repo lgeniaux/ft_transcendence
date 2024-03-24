@@ -23,7 +23,7 @@ services:
     user: django
     stdin_open: true # docker run -i
     tty: true        # docker run -t
-    command: ["./entrypoint.sh", "db", "python", "backend/manage.py", "runserver", "0.0.0.0:8000"]
+    command: gunicorn backend.transcendence.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/usr/src/app
       - avatars:/usr/src/app/avatars
@@ -36,6 +36,8 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_SETTINGS_MODULE=transcendence.settings
+      - PYTHONPATH=/usr/src/app/backend
       
   nginx:
     image: nginx:latest
@@ -44,6 +46,7 @@ services:
       - ./nginx/ssl:/etc/nginx/ssl
       - ./static:/usr/share/nginx/html/static
       - ./media:/usr/share/nginx/html/media
+      - ./frontend:/usr/share/nginx/html
     ports:
       - "443:443"
     depends_on:
@@ -52,7 +55,6 @@ services:
 
 
 
-  
 volumes:
   postgres_data:
   avatars:
